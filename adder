@@ -1,0 +1,41 @@
+-----------VERILOG CODES------------
+module Seq4bitAdder(
+input [3:0] a,b,
+input cin,
+output [3:0]sum,
+output cout
+);
+wire c0,c1,c2;
+Adder a0(a[0],b[0],cin,sum[0],c0);
+Adder a1(a[1],b[1],c0,sum[1],c1);
+Adder a2(a[2],b[2],c1,sum[2],c2);
+Adder a3(a[3],b[3],c2,sum[3],cout);
+endmodule
+
+module Adder(
+input a,b,cin,
+output sum, cout
+);
+assign sum = a^b^cin;
+assign cout = (a&b) | (b&cin) | (a&cin);
+endmodule
+
+------------TEST BENCH-----------------
+
+module Seq4bitAdder_tb;
+reg [3:0] a,b;
+reg cin;
+wire [3:0] sum;
+wire cout;
+
+Seq4bitAdder dut(a,b,cin,sum,cout);
+initial begin
+#20 a = 4'd0; b=4'd2; cin = 1'b0;
+#20 a = 4'd1; b=4'd3; cin = 1'b0;
+#20 a = 4'd4; b=4'd3; cin = 1'b0;
+#20 a = 4'd5; b=4'd6; cin = 1'b0;
+#20 a = 4'd7; b=4'd7; cin = 1'b0;
+#20 a = 4'd8; b=4'd9; cin = 1'b0;
+#20 a = 4'd0; b=4'd1; cin = 1'b1;
+end
+endmodule
