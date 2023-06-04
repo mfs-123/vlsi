@@ -1,0 +1,42 @@
+// 4x4 Multiplier
+
+module multiplier_4x4(input [3:0] A, B, output reg [7:0] result);
+  reg [7:0] temp_result;
+  reg [7:0] mult;
+  always @ (A, B) begin
+    mult = A * B;
+    temp_result = mult;
+  end
+  always @ (posedge clk) begin
+    result <= temp_result;
+  end
+endmodule
+
+// Test Bench
+
+module multiplier_4x4_tb;
+  reg [3:0] A, B;
+  reg clk;
+  wire [7:0] result;
+  multiplier_4x4 DUT (.A(A), .B(B), .result(result));
+  initial begin
+    A = 4'b0000;
+    B = 4'b0000;
+    clk = 0;
+    #5;
+    A = 4'b0001;
+    B = 4'b0001;
+    #10;
+    A = 4'b0010;
+    B = 4'b0011;
+    #10;
+    // Add more test cases here
+    $finish;
+  end
+
+  always begin
+    #5;
+    clk = ~clk;
+  end
+
+endmodule
