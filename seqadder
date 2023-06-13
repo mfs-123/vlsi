@@ -1,0 +1,79 @@
+module FourBitSequentialAdder(
+  input wire clk,
+  input wire reset,
+  input wire [3:0] a,
+  input wire [3:0] b,
+  output reg [4:0] sum
+);
+
+  reg [3:0] temp;
+
+  always @(posedge clk or posedge reset) begin
+    if (reset) begin
+      temp <= 4'b0;
+      sum <= 5'b0;
+    end
+    else begin
+      temp <= a + b;
+      sum <= temp + sum;
+    end
+  end
+
+endmodule
+
+------------TEST BENCH-----------------
+
+module FourBitSequentialAdder_TB;
+
+  reg clk;
+  reg reset;
+  reg [3:0] a;
+  reg [3:0] b;
+  wire [4:0] sum;
+
+  FourBitSequentialAdder dut (
+    .clk(clk),
+    .reset(reset),
+    .a(a),
+    .b(b),
+    .sum(sum)
+  );
+
+  initial begin
+    clk = 0;
+    reset = 1;
+    a = 4'b0000;
+    b = 4'b0000;
+
+    #10 reset = 0;
+
+    // Testcase 1: 0 + 0 = 0
+    a = 4'b0000;
+    b = 4'b0000;
+    #10;
+    if (sum !== 5'b00000) $display("Testcase 1 failed");
+
+    // Testcase 2: 1 + 2 = 3
+    a = 4'b0001;
+    b = 4'b0010;
+    #10;
+    if (sum !== 5'b00011) $display("Testcase 2 failed");
+
+    // Testcase 3: 7 + 8 = 15
+    a = 4'b0111;
+    b = 4'b1000;
+    #10;
+    if (sum !== 5'b01111) $display("Testcase 3 failed");
+
+    // Testcase 4: 15 + 1 = 0 (overflow)
+    a = 4'b1111;
+    b = 4'b0001;
+    #10;
+    if (sum !== 5'b00000) $display("Testcase 4 failed");
+
+    $finish;
+  end
+
+  always #5 clk = ~clk;
+
+endmodule
