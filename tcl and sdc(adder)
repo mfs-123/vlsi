@@ -1,0 +1,26 @@
+set_db / .init_lib_search_path {/home/install/FOUNDRY/digital/90nm/dig/lib}
+set_db library "slow.lib"
+set_db hdl_search_path /
+read_hdl "adder.v"
+elaborate
+read_sdc constraints_top.sdc
+synthesize -to_mapped -effort medium
+write_sdf -timescale ns -nonegchecks -recrem split -edges check_edge > delays.sdf
+
+write_hdl > adder_netlist.v
+write_sdc > adder_sdc.sdc
+
+
+gui_show
+report timing > adder_timing.rep
+report power > adder_power.rep
+report area > adder_cell.rep
+report messages > adder_message.rep
+
+------------SDC-----------------
+
+set_input_delay -max 1.0 [get_ports "a"]
+set_input_delay -max 1.0 [get_ports "b"]
+set_input_delay -max 1.0 [get_ports "cin"]
+set_output_delay -max 1.0 [get_ports "sum"]
+set_output_delay -max 1.0 [get_ports "cout"]
